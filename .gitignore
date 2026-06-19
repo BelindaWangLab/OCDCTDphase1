@@ -1,0 +1,6 @@
+.DS_Store
+.Rhistory
+.Rproj.user/
+.quarto/
+*_files/
+*.html

@@ -1,0 +1,301 @@
+---
+title: "OCD_CTD_TADA.qmd"
+last updated: 20251006
+format: html
+editor: visual
+---
+
+# Set up workspace
+
+```{r}
+library(tidyverse)
+library(readxl)
+
+#import functions
+source("TADAfunctions.R")
+
+#import TADA input tables (per cohort, tables include priors, and cohort-level dn/rare variant counts)
+tada_input_CTD <- read_excel("OCD_CTD_TADA_input.xlsx",
+    sheet = "tada_input_CTD")
+tada_input_OCD <- read_excel("OCD_CTD_TADA_input.xlsx",
+    sheet = "tada_input_OCD")
+tada_input_OCDCTD <- read_excel("OCD_CTD_TADA_input.xlsx",
+    sheet = "tada_input_OCDCTD")
+
+#import gene constraint and mutability metrics
+mutTable <- read_excel("OCD_CTD_TADA_input.xlsx",
+    sheet = "mutTable")
+```
+
+# CTD
+
+```{r}
+#dnCTD TADA
+n_case <- 1550
+n_con  <- 1734
+
+#CTD pi
+pi = 0.05848704
+
+#TADA, dnCTD, poisson burden
+tada_dnCTD_pois <- tada_input_CTD %>%
+  mutate(
+    BF_dnLGD = BF_DN_SNV(
+      count_case = CTD_dnLGD,
+      count_con  = SSC_dnLGD,
+      n_case     = n_case,
+      n_con      = n_con,
+      mut        = gnomad.dnLGD.mu,
+      gamma.dn   = gamma_pois_dnLGD,
+      beta.dn    = 0.2
+    ),
+    BF_dnMis3 = BF_DN_SNV(
+      count_case = CTD_dnMis3,
+      count_con  = SSC_dnMis3,
+      n_case     = n_case,
+      n_con      = n_con,
+      mut        = gnomad.dnMis3.mu,
+      gamma.dn   = gamma_pois_dnMis3,
+      beta.dn    = 0.2
+    )
+  ) %>% 
+  mutate(BF = BF_dnLGD * BF_dnMis3) %>% 
+  mutate(
+    qval=Bayesian.FDR(BF, pi0 = 1-pi)) %>% 
+  mutate(p = q2p(qval, gene)) %>% 
+  arrange(qval)
+
+tada_dnCTD_pois %>%
+  filter(qval < 0.3) %>%
+  mutate(
+    qval = signif(qval, 2),
+    p = signif(p, 2),
+    LOEUF = signif(LOEUF, 2),
+    misZ = signif(misZ, 2)
+  ) %>%
+  dplyr::select(gene, qval, p, pLI, LOEUF, misZ, CTD_dnLGD, CTD_dnMis3, SSC_dnLGD, SSC_dnMis3)
+```
+
+# OCD
+
+```{r}
+#dnOCD TADA
+n_case <- 1493
+n_con  <- 1734
+n_sing_case = 1546
+n_sing_ctrl = 2380
+
+#OCD pi
+pi = 0.0294039
+
+tada_dnccOCD_pois <- tada_input_OCD %>%
+  mutate(
+    BF_dnLGD = BF_DN_SNV(
+      count_case = OCD_dnLGD,
+      count_con  = SSC_dnLGD,
+      n_case     = n_case,
+      n_con      = n_con,
+      mut        = gnomad.dnLGD.mu,
+      gamma.dn   = gamma_pois_dnLGD,
+      beta.dn    = 0.2
+    ),
+    BF_dnMis3 = BF_DN_SNV(
+      count_case = OCD_dnMis3,
+      count_con  = SSC_dnMis3,
+      n_case     = n_case,
+      n_con      = n_con,
+      mut        = gnomad.dnMis3.mu,
+      gamma.dn   = gamma_pois_dnMis3,
+      beta.dn    = 0.2
+    ),
+    BF_rareLGD = BF_CC_SNV(
+      count_case = OCD_rareLGD, 
+      count_con = SSC_rareLGD,
+      n_case = n_sing_case,
+      n_con = n_sing_ctrl,
+      mut = gnomad.rareLGD.mu,
+      gamma.cc = gamma_nb_rareLGD,
+      nu=5000)) %>% 
+  mutate(BF = BF_dnLGD * BF_dnMis3 * BF_rareLGD) %>% 
+  mutate(
+    qval=Bayesian.FDR(BF, pi0 = 1-pi)) %>% 
+  mutate(p = q2p(qval, gene)) %>% 
+  arrange(qval)
+
+tada_dnccOCD_pois %>% filter(qval<0.1) %>% dplyr::select(gene, pLI, LOEUF, misZ, SSC_dnMis3:SSC_rareLGD, qval, p)
+
+tada_dnccOCD_pois %>% 
+  filter(qval < 0.3) %>%
+  mutate(
+    qval = signif(qval, 2),
+    p = signif(p, 2),
+    LOEUF = signif(LOEUF, 2),
+    misZ = signif(misZ, 2)
+  ) %>%
+  dplyr::select(gene, qval, p, pLI, LOEUF, misZ, OCD_dnLGD, OCD_dnMis3, OCD_rareLGD, SSC_dnLGD, SSC_dnMis3, SSC_rareLGD)
+```
+
+# OCDCTD
+
+```{r}
+#dnccOCDCTD TADA
+n_case <- 2418
+n_con  <- 1734
+n_sing_case = 1546
+n_sing_ctrl = 2380
+
+#OCDCTD pi
+pi = 0.04063085
+
+
+tada_dnccOCDCTD_pois <- tada_input_OCDCTD %>%
+  mutate(
+    BF_dnLGD = BF_DN_SNV(
+      count_case = OCDCTD_dnLGD,
+      count_con  = SSC_dnLGD,
+      n_case     = n_case,
+      n_con      = n_con,
+      mut        = gnomad.dnLGD.mu,
+      gamma.dn   = gamma_pois_dnLGD,
+      beta.dn    = 0.2
+    ),
+    BF_dnMis3 = BF_DN_SNV(
+      count_case = OCDCTD_dnMis3,
+      count_con  = SSC_dnMis3,
+      n_case     = n_case,
+      n_con      = n_con,
+      mut        = gnomad.dnMis3.mu,
+      gamma.dn   = gamma_pois_dnMis3,
+      beta.dn    = 0.2
+    ),
+    BF_rareLGD = BF_CC_SNV(
+      count_case = OCD_rareLGD, 
+      count_con = SSC_rareLGD,
+      n_case = n_sing_case,
+      n_con = n_sing_ctrl,
+      mut = gnomad.rareLGD.mu,
+      gamma.cc = gamma_nb_rareLGD,
+      nu=5000))
+
+
+tada_dnccOCDCTD_pois = tada_dnccOCDCTD_pois %>% 
+  mutate(BF = BF_dnLGD * BF_dnMis3 * BF_rareLGD) %>% 
+  mutate(
+    qval=Bayesian.FDR(BF, pi0 = 1-pi)) %>% 
+  mutate(p = q2p(qval, gene)) %>% 
+  arrange(qval)
+
+#look at hcOCDCTD
+tada_dnccOCDCTD_pois %>% 
+  filter(qval < 0.1) %>%
+  mutate(
+    qval = signif(qval, 2),
+    p = signif(p, 2),
+    LOEUF = signif(LOEUF, 2),
+    misZ = signif(misZ, 2)
+  ) %>%
+  dplyr::select(gene, qval, p, pLI, LOEUF, misZ, OCDCTD_dnLGD, OCDCTD_dnMis3, OCD_rareLGD, SSC_dnLGD, SSC_dnMis3, SSC_rareLGD)
+```
+
+# Compile TADA results
+
+Output: tada_results dataframe
+
+```{r}
+temp <- list(
+  dnCTD      = tada_dnCTD_pois,
+  dnccOCD   = tada_dnccOCD_pois,
+  dnccOCDCTD = tada_dnccOCDCTD_pois
+)
+
+keep_pattern <- paste(c("qval", "SSC", "OCD",  "CTD", "OCDCTD"), collapse = "|")
+
+# Rename qval column in each dataframe, then select relevant columns
+temp2 <- imap(temp, ~ 
+  .x %>%
+    ## Rename 'qval' column in each dataframe to e.g., 'q_dnOCD'
+    dplyr::rename(!!paste0("q_", .y) := qval) %>%
+    dplyr::select(gene, matches(keep_pattern))
+)
+
+# Perform full join across all renamed dataframes
+tada_results <- purrr::reduce(temp2, full_join, by = "gene") %>%
+  #deduplicate
+  dplyr::select(all_of(names(.)[!duplicated(gsub("\\.x+|\\.y+", "", names(.)))])) %>%
+  # Clean column names by removing .x, .y, .x.x, etc.
+  setNames(gsub("\\.x+|\\.y+", "", names(.))) %>%
+  #Reorders columns as:gene, q_, other columns in alphabetical order, ssc columns last
+  {
+    all_cols <- names(.)
+    q_cols <- grep("^q_", all_cols, value = TRUE)
+    ssc_cols <- grep("^SSC_", all_cols, value = TRUE)
+    other_cols <- setdiff(all_cols, c("gene", q_cols, ssc_cols))
+    dplyr::select(., gene, all_of(q_cols), all_of(sort(other_cols)), all_of(sort(ssc_cols)))
+  } %>%
+  mutate(gamma_class = "pois") %>% dplyr::relocate(gamma_class)  %>%
+  # Join with mutTable
+  full_join(
+    mutTable %>% dplyr::select(gene, transcript, LOEUF, LOEUF_decile, pLI, misZ, gnomad.dnLGD.mu:gnomad.rare_mis3.mu),
+    by = "gene"
+  ) %>%
+  dplyr::select(-gamma_class, -gnomad.rareMisA.mu, -gnomad.rareMisB.mu, -gnomad.dnMisB.mu, -gnomad.rare_mis3.mu) %>%
+  dplyr::select(gene, transcript, LOEUF, LOEUF_decile, pLI, 
+                gnomad.dnLGD.mu, gnomad.dnMis3.mu, gnomad.rareLGD.mu,
+                q_dnccOCD, q_dnCTD, q_dnccOCDCTD,
+                CTD_dnLGD:SSC_rareLGD) %>%
+  arrange(q_dnccOCDCTD)
+
+#save results as excel file
+#write.xlsx(tada_results, file = "output_path/OCDCTD_tada_results.xlsx")
+```
+
+## How many significant hc/p genes?
+
+Tally the number of significant hc/p genes
+
+-   hc: FDR \< 0.1
+
+-   p: FDR 0.1-0.3 and at least 2 case dnDam
+
+```{r}
+nGenes = tada_results %>%
+  transmute(
+    gene,
+    dnCTD = q_dnCTD,
+    dnccOCD = q_dnccOCD,
+    dnccOCDCTD = q_dnccOCDCTD,
+    CTD_dnDamaging = CTD_dnLGD + CTD_dnMis3,
+    OCD_dnDamaging = OCD_dnLGD + OCD_dnMis3,
+    OCDCTD_dnDamaging = OCDCTD_dnLGD + OCDCTD_dnMis3,
+  ) %>%
+  pivot_longer(
+    cols = starts_with("dn"),
+    names_to = "model",
+    values_to = "qval"
+  ) %>%
+  mutate(
+    dnDamaging = case_when(
+      model == "dnCTD" ~ CTD_dnDamaging,
+      model == "dnccOCD" ~ OCD_dnDamaging,
+      model == "dnccOCDCTD" ~ OCDCTD_dnDamaging
+      )
+  ) %>%
+  group_by(model) %>%
+  summarise(
+    hc = sum(qval < 0.1, na.rm = TRUE),  # no dnDamaging filter
+    p = sum(qval >= 0.1 & qval < 0.3 & dnDamaging >= 2, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(model = factor(
+    model,
+    levels = c( "dnCTD","dnccOCD", "dnccOCDCTD")
+  )) %>%
+  arrange(model)
+nGenes
+
+    #   model         hc     p
+    #   <fct>      <int> <int>
+    # 1 dnCTD         10     6
+    # 2 dnccOCD       12    16
+    # 3 dnccOCDCTD    34    20
+```
