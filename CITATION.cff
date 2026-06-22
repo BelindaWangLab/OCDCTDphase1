@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "OCDCTDphase1"
+type: software
+authors:
+  - family-names: Wang
+    given-names: Belinda
+abstract: "Code and selected input files used to reproduce the phase 1 OCD, CTD, and OCDCTD TADA gene discovery analyses."
+repository-code: "https://github.com/BelindaWangLab/OCDCTDphase1"
+keywords:
+  - obsessive-compulsive disorder
+  - chronic tic disorder
+  - OCDCTD
+  - TADA
+  - gene discovery
+  - rare variants
