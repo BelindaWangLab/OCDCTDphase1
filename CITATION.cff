@@ -5,6 +5,133 @@ type: software
 authors:
   - family-names: Wang
     given-names: Belinda
+  - family-names: Tran
+    given-names: Matthew N.
+  - family-names: Wang
+    given-names: Sheng
+  - family-names: Liu
+    given-names: Yuting
+  - family-names: Olfson
+    given-names: Emily
+  - family-names: Wang
+    given-names: George
+  - family-names: Sun
+    given-names: Nawei
+  - family-names: Dea
+    given-names: Jeanselle
+  - family-names: "Ochieng' Olwal"
+    given-names: Charles
+  - family-names: Bertolace
+    given-names: Lyvia
+  - family-names: Bloch
+    given-names: Michael H.
+  - family-names: Cappi
+    given-names: Carolina
+  - family-names: Chang
+    given-names: Yi-Chieh
+  - family-names: Chavira
+    given-names: Denise
+  - family-names: Coffey
+    given-names: Barbara J.
+  - family-names: Falkenstein
+    given-names: Martha J.
+  - family-names: Frank
+    given-names: Adam C.
+  - family-names: Franklin
+    given-names: Martin E.
+  - family-names: Garayalde
+    given-names: Stephanie
+  - family-names: Garrido
+    given-names: Helena
+  - family-names: Grados
+    given-names: Marco
+  - family-names: Hatem
+    given-names: Rami
+  - family-names: Howell
+    given-names: Allyna-London
+  - family-names: Khim
+    given-names: Starlette
+  - family-names: Kuckertz
+    given-names: Jennie M.
+  - family-names: Le
+    given-names: Mindy M.
+  - family-names: Libby
+    given-names: Allison
+  - family-names: McCarty
+    given-names: Ryan J.
+  - family-names: McNamara
+    given-names: Mary E.
+  - family-names: McNeil
+    given-names: Daniel
+  - family-names: Miguel
+    given-names: Euripedes C.
+  - family-names: Nasello
+    given-names: Cara
+  - family-names: Nguyen
+    given-names: Binh
+  - family-names: Norbu
+    given-names: Tenzin
+  - family-names: Oh
+    given-names: Lauren
+  - family-names: Ordway
+    given-names: Ashley
+  - family-names: Paciotti
+    given-names: Catherine
+  - family-names: Peskin
+    given-names: Viviana A.
+  - family-names: Pittenger
+    given-names: Christopher
+  - family-names: Simpson
+    given-names: Helen Blair
+  - family-names: Martin
+    given-names: Heather Simpson
+  - family-names: Tischfield
+    given-names: Max A.
+  - family-names: Xing
+    given-names: Jinchuan
+  - family-names: Zakrzewski
+    given-names: Jessica J.
+  - name: "Tourette International Collaborative Genetics (TIC Genetics)"
+  - family-names: Dietrich
+    given-names: Andrea
+  - family-names: Gilbert
+    given-names: Donald L.
+  - family-names: Hoekstra
+    given-names: Pieter J.
+  - family-names: Kim
+    given-names: Young Shin
+  - family-names: Kuperman
+    given-names: Samuel
+  - family-names: Rosen
+    given-names: Alyssa
+  - family-names: Zinner
+    given-names: Samuel H.
+  - family-names: Bouhaddou
+    given-names: Mehdi
+  - family-names: King
+    given-names: Robert A.
+  - family-names: Rouleau
+    given-names: Guy
+  - family-names: Ressler
+    given-names: Kerry J.
+  - family-names: Mathews
+    given-names: Carol A.
+  - family-names: Krogan
+    given-names: Nevan J.
+  - family-names: Sestan
+    given-names: Nenad
+  - family-names: Tischfield
+    given-names: Jay A.
+  - family-names: Lee
+    given-names: A. Moses
+  - family-names: Heiman
+    given-names: Gary A.
+  - family-names: Fernandez
+    given-names: Thomas V.
+  - family-names: Willsey
+    given-names: A. Jeremy
+  - family-names: State
+    given-names: Matthew W.
 abstract: "Code and selected input files used to reproduce the phase 1 OCD, CTD, and OCDCTD TADA gene discovery analyses."
 repository-code: "https://github.com/BelindaWangLab/OCDCTDphase1"
 keywords:
